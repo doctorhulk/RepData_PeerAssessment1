@@ -1,8 +1,10 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
+title: 'Reproducible Research: Peer Assessment 1'
+output:
   html_document:
-    keep_md: true
+    keep_md: yes
+  pdf_document: default
+  word_document: default
 ---
 
 
@@ -19,7 +21,7 @@ activity<-read.csv("activity.csv",stringsAsFactors=FALSE)
 
 
 ```r
-# Convert the data column from character to an appropriate date format
+# Convert the date column from a character type to an appropriate date format
 activity$date<-strptime(activity$date,"%Y-%m-%d")
 ```
 
@@ -36,7 +38,7 @@ library(ggplot2)
 agg1<-ddply(activity,.(date),summarize,steps=sum(steps,na.rm=T))
 
 ggplot(agg1,aes(x=steps))+scale_y_continuous(breaks=seq(0,10,by=2))+
-  ylab("Number of days")+xlab("Steps per day")+ggtitle("Daily Steps")+geom_histogram()
+  ylab("Number of days")+xlab("Steps per day")+ggtitle("Daily Steps")+geom_histogram(binwidth=1000)
 ```
 
 ![plot of chunk task2p1](figure/task2p1-1.png) 
@@ -63,7 +65,7 @@ with(agg1,data.frame(mean=mean(steps),median=median(steps)))
 agg2<-ddply(activity,.(interval),summarize,mean_steps=mean(steps,na.rm=TRUE))
 
 ggplot(agg2,aes(x=interval,y=mean_steps))+ggtitle("Average Steps by Interval")+
-  ylab("Average number of steps")+xlab("Interval")+geom_line()
+  ylab("Average number of steps")+xlab("Interval")+geom_line(colour="steelblue")
 ```
 
 ![plot of chunk task3p1](figure/task3p1-1.png) 
@@ -120,7 +122,7 @@ activity_bis$mean_steps<-NULL
 agg3<-ddply(activity_bis,.(date),summarize,steps=sum(steps))
 
 ggplot(agg3,aes(x=steps))+scale_y_continuous(breaks=seq(0,10,by=2))+
-  ylab("Number of days")+xlab("Total Steps per day")+ggtitle("Daily Steps (NAs removed)")+geom_histogram()
+  ylab("Number of days")+xlab("Total Steps per day")+ggtitle("Daily Steps (NAs removed)")+geom_histogram(binwidth=1000)
 ```
 
 ![plot of chunk task4p3](figure/task4p3-1.png) 
@@ -134,7 +136,7 @@ with(agg3,data.frame(mean=mean(steps),median=median(steps)))
 ## 1 10766.19 10766.19
 ```
   
-**Answer:** The above numbers differ, they'e now larger as previously ignored values were replaced with certain numbers.
+**Answer:** The above numbers differ, they'e now larger as because NAs were replaced with certain numbers.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -168,13 +170,13 @@ head(activity)
 ## 6    NA 2012-10-01       25 weekday
 ```
 
-2. Make a panel plot containing a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). The plot should look something like the following, which was created using **simulated data**:
+2. Make a panel plot containing a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
 
 ```r
 agg4<-ddply(activity,.(dow,interval),summarize,mean_steps=mean(steps,na.rm=TRUE))
 
-ggplot(agg4,aes(x=interval,y=mean_steps))+ggtitle("Average Steps by Interval")+
+ggplot(agg4,aes(x=interval,y=mean_steps,colour=agg4$dow))+ggtitle("Average Steps by Interval")+
   ylab("Average number of steps")+xlab("Interval")+facet_grid(dow~.)+geom_line()
 ```
 
